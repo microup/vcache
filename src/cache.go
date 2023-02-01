@@ -44,14 +44,14 @@ func (c *Cache) StartEvict(ctx context.Context) {
 	}()
 }
 
-func (c *Cache) Add(key string, value interface{}) {
+func (c *Cache) Add(key interface{}, value interface{}) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	c.data[key] = &cacheValue{value: value, lastUsed: time.Now()}
 }
 
-func (c *Cache) Get(key string) (interface{}, bool) {
+func (c *Cache) Get(key interface{}) (interface{}, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
