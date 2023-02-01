@@ -2,7 +2,7 @@
 
 # What is VCache?
 
-This is a Go package named "vcache" which implements a simple in-memory cache. The cache stores data as key-value pairs, where the keys are strings and the values can be of any type. The cache is designed to be concurrent-safe with the use of a sync.Mutex.
+This is a Go package named "vcache" which implements a simple in-memory cache. The cache stores data as key-value pairs, where the keys are interface types and the values can be of any type. The cache is designed to be concurrent-safe with the use of a sync.Mutex.
 
 * This library "vcache" is a pure implementation and does not rely on any external dependencies. It is a self-contained implementation of an in-memory cache.
 
