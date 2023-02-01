@@ -21,3 +21,6 @@ race: dep ## Run data race detector
 
 dep: ## Get the dependencies
   go get -v -d ./...
+
+bench:
+  go test -bench=. ./... -benchmem -benchtime=5s
