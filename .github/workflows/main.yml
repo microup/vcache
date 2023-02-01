@@ -1,0 +1,49 @@
+name: test-and-linter
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+
+  build-test:
+    name: "Test & Lint"
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        go: [ '1.19' ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: download deps
+        run:  |
+          go mod download
+
+      - name: check go.mod
+        run: |
+          go mod tidy -v
+
+      - name: test all
+        run: |
+          CI=true go test -short ./...
+
+      - name: test race
+        run: |
+          CI=true go test -race -short  ./...
+
+      - name: linter
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
+          golangci-lint --version
+          golangci-lint run -v ./...
+
