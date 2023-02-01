@@ -42,7 +42,6 @@ func (c *Cache) StartEvict(ctx context.Context) {
 			}
 		}
 	}()
-
 }
 
 func (c *Cache) Add(key string, value interface{}) {
