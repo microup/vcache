@@ -1,5 +1,7 @@
 This is a Go package named "vcache" which implements a simple in-memory cache. Ihe cache stores data as key-value pairs, where the keys are strings and the values can be of any type. The cache is designed to be concurrent-safe with the use of a sync.Mutex.
 
+This library "vcache" is a pure implementation and does not rely on any external dependencies. It is a self-contained implementation of an in-memory cache.
+
 This library can be applied in software systems where caching is needed, such as web applications, databases, or other systems that require fast access to frequently used data. The library provides an in-memory cache that can be used to store frequently used data, such as API responses, database results, or other frequently accessed data. By using this library, the system can avoid unnecessary data processing and improve performance by quickly retrieving the data from the cache. The cache can also be automatically cleaned up based on the time specified in the durationTimeEvict variable, freeing up memory and ensuring that the cache remains relevant.
 
 It has the following main functions:
