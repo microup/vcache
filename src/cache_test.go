@@ -78,3 +78,27 @@ func TestAddGetData(t *testing.T) {
 		t.Errorf("Expected lastUsed to be set but got nil")
 	}
 }
+
+func TestCache_Delete(t *testing.T) {
+	t.Parallel()
+
+	cacheInstance := cache.New(time.Minute, time.Hour)
+
+	// Adding a key-value pair to the cache
+	cacheInstance.Add("key1", "value1")
+
+	// Check if the key-value pair was added successfully
+	val, found := cacheInstance.Get("key1")
+	if !found || val != "value1" {
+		t.Error("Key-value pair was not added to the cache")
+	}
+
+	// Delete the key-value pair
+	cacheInstance.Delete("key1")
+
+	// Check if the key-value pair was deleted successfully
+	_, found = cacheInstance.Get("key1")
+	if found {
+		t.Error("Key-value pair was not deleted from the cache")
+	}
+}
