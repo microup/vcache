@@ -28,8 +28,8 @@ The cache entries are automatically evicted every durationCheckTicker time inter
 go test -bench=. -benchmem -benchtime=5s
 
 cpu: AMD Ryzen 5 5600X 6-Core Processor
-BenchmarkCacheAdd-12             7467901               873.1 ns/op           259 B/op          7 allocs/op
-BenchmarkCacheGet-12            28955613               334.7 ns/op            39 B/op          2 allocs/op
-BenchmarkCacheDelete-12         36772456               204.5 ns/op             7 B/op          0 allocs/op
-BenchmarkCacheEvict-12          22011206               259.6 ns/op             0 B/op          0 allocs/op
+BenchmarkCacheAdd-12             9176148               811.5 ns/op           235 B/op          7 allocs/op
+BenchmarkCacheGet-12            36088792               208.0 ns/op             7 B/op          0 allocs/op
+BenchmarkCacheEvict-12          21505044               291.1 ns/op             0 B/op          0 allocs/op
+BenchmarkCacheDelete-12         31855316               204.1 ns/op             7 B/op          0 allocs/op
 ```
