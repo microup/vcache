@@ -10,7 +10,7 @@ import (
 	cache "microup.ru/vcache/src"
 )
 
-func TestCache_Add(t *testing.T) {
+func TestFuzzing_Add(t *testing.T) {
 	t.Parallel()
 
 	testCache := cache.New(time.Second, time.Minute)
@@ -37,6 +37,32 @@ func TestCache_Add(t *testing.T) {
 			if existingKey == key {
 				t.Fatalf("Key %s is not unique", key)
 			}
+		}
+	}
+}
+
+func TestFuzzingCache_Delete(t *testing.T) {
+	t.Parallel()
+
+	testCache := cache.New(time.Second, time.Minute)
+	keys := []string{}
+
+	for index := 0; index < 1000; index++ {
+		key := generateRandomKey(32)
+		value, err := generateRandomValue()
+
+		if err != nil {
+			t.Fatalf("failed test, get err: %v", err)
+		}
+
+		keys = append(keys, key) //nolint:staticcheck
+
+		testCache.Add(key, value)
+		testCache.Delete(key)
+
+		_, foundKey := testCache.Get(key)
+		if foundKey {
+			t.Fatalf("Key %s should not be found in cache after deletion", key)
 		}
 	}
 }

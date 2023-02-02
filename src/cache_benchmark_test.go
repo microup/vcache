@@ -48,3 +48,19 @@ func BenchmarkCacheEvict(b *testing.B) {
 		cacheTest.Evict()
 	}
 }
+
+func BenchmarkCacheDelete(b *testing.B) {
+	cacheTest := cache.New(1*time.Second, 2*time.Second)
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		value := "value" + strconv.Itoa(i)
+		cacheTest.Add(key, value)
+	}
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		cacheTest.Delete(key)
+	}
+}

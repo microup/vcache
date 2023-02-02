@@ -9,19 +9,19 @@ import (
 type Cache struct {
 	durationTimeEvict   time.Duration
 	durationCheckTicker time.Duration
-	data                map[interface{}] *cacheValue
-	mu                  *sync.Mutex
+	data                map[any] *cacheValue
+	mu                  *sync.RWMutex
 }
 
 type cacheValue struct {
-	value    interface{}
+	value    any
 	lastUsed time.Time
 }
 
 func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache {
 	return &Cache{
-		mu:                  &sync.Mutex{},
-		data:                make(map[interface{}] *cacheValue),
+		mu:                  &sync.RWMutex{},
+		data:                make(map[any] *cacheValue),
 		durationCheckTicker: timeCheckNewTicker,
 		durationTimeEvict:   timeRecordEvict,		
 	}
@@ -44,16 +44,16 @@ func (c *Cache) StartEvict(ctx context.Context) {
 	}()
 }
 
-func (c *Cache) Add(key interface{}, value interface{}) {
+func (c *Cache) Add(key any, value any) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	c.data[key] = &cacheValue{value: value, lastUsed: time.Now()}
 }
 
-func (c *Cache) Get(key interface{}) (interface{}, bool) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+func (c *Cache) Get(key any) (any, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 
 	val, foundKey := c.data[key]
 
@@ -65,6 +65,13 @@ func (c *Cache) Get(key interface{}) (interface{}, bool) {
 	}
 
 	return "", foundKey
+}
+
+func (c *Cache) Delete(key any) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	delete(c.data, key)
 }
 
 func (c *Cache) Evict() {
