@@ -59,12 +59,11 @@ func (c *Cache) Get(key any) (any, bool) {
 
 	if foundKey {
 		val.lastUsed = time.Now()
-		c.data[key] = val
 
 		return val.value, foundKey
 	}
 
-	return "", foundKey
+	return "", false
 }
 
 func (c *Cache) Delete(key any) {
