@@ -22,14 +22,86 @@ This library can be applied in software systems where caching is needed, such as
 
 The cache entries are automatically evicted every durationCheckTicker time intervals. The eviction process removes any cache entries that have not been accessed within the specified durationTimeEvict time period.
 
+## Here is an example of how to use the cache library
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+
+    "cache"
+)
+
+func main() {
+    // Create a context for the cache eviction
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    // Create a cache with a check ticker of 1 second and a record eviction of 5 seconds
+    c := cache.New(time.Second, 5*time.Second)
+
+    // Start eviction routine
+    c.StartEvict(ctx)
+
+    // Add key-value pairs to the cache
+    err := c.Add("key1", "value1")
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    err = c.Add("key2", 2)
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    // Get values from the cache
+    val, found := c.Get("key1")
+    if found {
+        fmt.Printf("key1: %v\n", val)
+    } else {
+        fmt.Println("key1 not found")
+    }
+
+    val, found = c.Get("key2")
+    if found {
+        fmt.Printf("key2: %v\n", val)
+    } else {
+        fmt.Println("key2 not found")
+    }
+
+    // Wait for 6 seconds for key1 to be evicted
+    time.Sleep(6 * time.Second)
+
+    // Try to get key1 after eviction
+    val, found = c.Get("key1")
+    if found {
+        fmt.Printf("key1: %v\n", val)
+    } else {
+        fmt.Println("key1 not found")
+    }
+}
+```
+output:
+
+```bash
+key1: value1
+key2: 2
+key1 not found
+```
+
+In this example, the cache is created with a check ticker of 1 second and a record eviction of 5 seconds. The cache eviction routine is started using the StartEvict method and passing in the context created earlier. Key-value pairs are added to the cache using the Add method, and values are retrieved using the Get method. After waiting for 6 seconds, the Get method is used again to retrieve the value for the key "key1", but it is no longer found because it has been evicted from the cache.
+
 ## Results benchmark
 
 ```
 go test -bench=. -benchmem -benchtime=5s
 
 cpu: AMD Ryzen 5 5600X 6-Core Processor
-BenchmarkCacheAdd-12             9176148               811.5 ns/op           235 B/op          7 allocs/op
-BenchmarkCacheGet-12            36088792               208.0 ns/op             7 B/op          0 allocs/op
-BenchmarkCacheEvict-12          21505044               291.1 ns/op             0 B/op          0 allocs/op
-BenchmarkCacheDelete-12         31855316               204.1 ns/op             7 B/op          0 allocs/op
+BenchmarkCacheAdd-12             9367170               759.6 ns/op           232 B/op          7 allocs/op
+BenchmarkCacheGet-12            39035611               194.4 ns/op             7 B/op          0 allocs/op
+BenchmarkCacheEvict-12          22821903               258.2 ns/op             0 B/op          0 allocs/op
+BenchmarkCacheDelete-12         37573690               194.3 ns/op             7 B/op          0 allocs/op
 ```
