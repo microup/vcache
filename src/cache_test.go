@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"microup.ru/vcache/src"
+	cache "microup.ru/vcache/src"
 )
 
 func TestStartEvict(t *testing.T) {
@@ -18,7 +18,12 @@ func TestStartEvict(t *testing.T) {
 	timeRecordEvict := 2 * time.Second
 
 	cacheInstance := cache.New(timeCheckNewTicker, timeRecordEvict)
-	cacheInstance.Add("test_key", "12345678")
+	err := cacheInstance.Add("test_key", "12345678")
+
+	if err != nil {
+		t.Errorf("failed add key %v", err)
+	}
+
 	cacheInstance.StartEvict(ctx)
 
 	time.Sleep(3 * time.Second)
@@ -41,7 +46,11 @@ func TestCacheEvict(t *testing.T) {
 
 	searchValue := "12345678"
 
-	cacheInstance.Add("test_key", "12345678")
+	err := cacheInstance.Add("test_key", "12345678")
+
+	if err != nil {
+		t.Errorf("failed add key %v", err)
+	}
 
 	value, foundKey := cacheInstance.Get("test_key")
 	if !foundKey || value != searchValue {
@@ -66,7 +75,12 @@ func TestAddGetData(t *testing.T) {
 
 	searchValue := "12345678"
 
-	cacheInstance.Add("test_key", searchValue)
+	err := cacheInstance.Add("test_key", searchValue)
+
+	if err != nil {
+		t.Errorf("failed add key %v", err)
+	}
+
 	value, foundKey := cacheInstance.Get("test_key")
 
 	if !foundKey || value != searchValue {
@@ -85,7 +99,11 @@ func TestCache_Delete(t *testing.T) {
 	cacheInstance := cache.New(time.Minute, time.Hour)
 
 	// Adding a key-value pair to the cache
-	cacheInstance.Add("key1", "value1")
+	err := cacheInstance.Add("key1", "value1")
+	
+	if err != nil {
+		t.Errorf("failed add key %v", err)
+	}
 
 	// Check if the key-value pair was added successfully
 	val, found := cacheInstance.Get("key1")
