@@ -14,7 +14,7 @@ func BenchmarkCacheAdd(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		key := "key" + strconv.Itoa(i)
 		value := "value" + strconv.Itoa(i)
-		c.Add(key, value)
+		_ = c.Add(key, value)
 	}
 }
 
@@ -24,7 +24,7 @@ func BenchmarkCacheGet(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		key := "key" + strconv.Itoa(i)
 		value := "value" + strconv.Itoa(i)
-		cacheTest.Add(key, value)
+		_ = cacheTest.Add(key, value)
 	}
 	b.ResetTimer()
 
@@ -40,7 +40,7 @@ func BenchmarkCacheEvict(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		key := "key" + strconv.Itoa(i)
 		value := "value" + strconv.Itoa(i)
-		cacheTest.Add(key, value)
+		_ = cacheTest.Add(key, value)
 	}
 	b.ResetTimer()
 
@@ -55,7 +55,7 @@ func BenchmarkCacheDelete(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		key := "key" + strconv.Itoa(i)
 		value := "value" + strconv.Itoa(i)
-		cacheTest.Add(key, value)
+		_ = cacheTest.Add(key, value)
 	}
 	b.ResetTimer()
 

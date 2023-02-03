@@ -25,7 +25,7 @@ func TestFuzzing_Add(t *testing.T) {
 		}
 
 		keys = append(keys, key)
-		testCache.Add(key, value)
+		_ = testCache.Add(key, value)
 
 		_, foundKey := testCache.Get(key)
 		if !foundKey {
@@ -57,7 +57,11 @@ func TestFuzzingCache_Delete(t *testing.T) {
 
 		keys = append(keys, key) //nolint:staticcheck
 
-		testCache.Add(key, value)
+		err = testCache.Add(key, value)
+		if err != nil {
+			continue
+		}
+
 		testCache.Delete(key)
 
 		_, foundKey := testCache.Get(key)
