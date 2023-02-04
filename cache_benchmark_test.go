@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	cache "microup.ru/vcache"
+	cache "github.com/microup/vcache"
 )
 
 func BenchmarkCacheAdd(b *testing.B) {
@@ -73,7 +73,7 @@ func BenchmarkCacheEvict(b *testing.B) {
 }
 
 func BenchmarkCacheMixed(b *testing.B) {
-	cacheTest := cache.New(1*time.Nanosecond, 1*time.Nanosecond)
+	cacheTest := cache.New(2*time.Second, 1*time.Nanosecond)
 	cacheTest.StartEvict(context.Background())
 
 	for i := 0; i < b.N; i++ {

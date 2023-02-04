@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	cache "microup.ru/vcache"
+	cache "github.com/microup/vcache"
 )
 
 func TestFuzzing_Add(t *testing.T) {
