@@ -16,28 +16,28 @@ func (e *KeyExistsError) Error() string {
 }
 
 type Cache struct {
-	durationTimeEvict   time.Duration
-	durationCheckTicker time.Duration
-	store               map[any]*cacheValue
-	mu                  *sync.RWMutex
+	durationRecordEvict    int64
+	durationCheckNewTicker time.Duration
+	store                  map[any]*cacheValue
+	mu                     *sync.RWMutex
 }
 
 type cacheValue struct {
-	value    any
-	lastUsed time.Time
+	value          any
+	expirationTime int64
 }
 
 func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache {
 	return &Cache{
-		mu:                  &sync.RWMutex{},
-		store:               make(map[any]*cacheValue),
-		durationCheckTicker: timeCheckNewTicker,
-		durationTimeEvict:   timeRecordEvict,
+		mu:                     &sync.RWMutex{},
+		store:                  make(map[any]*cacheValue),
+		durationCheckNewTicker: timeCheckNewTicker,
+		durationRecordEvict:    int64(timeRecordEvict.Seconds()),
 	}
 }
 
 func (c *Cache) StartEvict(ctx context.Context) {
-	ticker := time.NewTicker(c.durationCheckTicker)
+	ticker := time.NewTicker(c.durationCheckNewTicker)
 
 	go func() {
 		for {
@@ -55,50 +55,62 @@ func (c *Cache) StartEvict(ctx context.Context) {
 
 func (c *Cache) Add(key any, value any) error {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 
 	if _, ok := c.store[key]; ok {
+		c.mu.Unlock()
+
 		return &KeyExistsError{Key: key}
 	}
 
-	c.store[key] = &cacheValue{value: value, lastUsed: time.Now()}
+	c.store[key] = &cacheValue{
+		value:          value,
+		expirationTime: time.Now().Unix()  + c.durationRecordEvict,
+	}
+
+	c.mu.Unlock()
 
 	return nil
 }
 
 func (c *Cache) Get(key any) (any, bool) {
 	c.mu.RLock()
-	defer c.mu.RUnlock()
 
 	val, foundKey := c.store[key]
 
 	if foundKey {
-		if time.Since(val.lastUsed) >= c.durationTimeEvict {
+		if time.Now().Unix() > val.expirationTime {
+			c.mu.RUnlock()
+
 			return nil, false
 		}
 
-		val.lastUsed = time.Now()
+		val.expirationTime = time.Now().Unix()
+
+		c.mu.RUnlock()
 
 		return val.value, foundKey
 	}
+
+	c.mu.RUnlock()
 
 	return nil, false
 }
 
 func (c *Cache) Delete(key any) {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 
 	delete(c.store, key)
+	c.mu.Unlock()
 }
 
 func (c *Cache) Evict() {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 
 	for key, val := range c.store {
-		if time.Since(val.lastUsed) >= c.durationTimeEvict {
+		if time.Now().Unix() > val.expirationTime {
 			delete(c.store, key)
 		}
 	}
+
+	c.mu.Unlock()
 }
