@@ -100,7 +100,7 @@ func TestCache_Delete(t *testing.T) {
 
 	// Adding a key-value pair to the cache
 	err := cacheInstance.Add("key1", "value1")
-	
+
 	if err != nil {
 		t.Errorf("failed add key %v", err)
 	}
@@ -142,5 +142,4 @@ func TestDifferentTypes(t *testing.T) {
 	if !foundKey || value != searchValue {
 		t.Errorf("expected value to be %s but got %s", searchValue, value)
 	}
-
 }
