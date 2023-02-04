@@ -6,6 +6,8 @@ This is a Go package named "vcache" which implements a simple in-memory cache. T
 
 * This library "vcache" is a pure implementation and does not rely on any external dependencies. It is a self-contained implementation of an in-memory cache.
 
+This project differs from the more well-known [go-cache](https://github.com/patrickmn/go-cache) in that it uses an intraface{} type key instead of a string key in its map structure, making cache management more flexible.
+
 ## Where can this be used?
 
 This library can be applied in software systems where caching is needed, such as web applications, databases, or other systems that require fast access to frequently used data. The library provides an in-memory cache that can be used to store frequently used data, such as API responses, database results, or other frequently accessed data. By using this library, the system can avoid unnecessary data processing and improve performance by quickly retrieving the data from the cache. The cache can also be automatically cleaned up based on the time specified in the durationTimeEvict variable, freeing up memory and ensuring that the cache remains relevant.
