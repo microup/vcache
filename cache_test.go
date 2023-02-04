@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	cache "microup.ru/vcache"
+	cache "github.com/microup/vcache"
 )
 
 func TestStartEvict(t *testing.T) {
@@ -100,7 +100,7 @@ func TestCache_Delete(t *testing.T) {
 
 	// Adding a key-value pair to the cache
 	err := cacheInstance.Add("key1", "value1")
-	
+
 	if err != nil {
 		t.Errorf("failed add key %v", err)
 	}
@@ -118,5 +118,28 @@ func TestCache_Delete(t *testing.T) {
 	_, found = cacheInstance.Get("key1")
 	if found {
 		t.Error("Key-value pair was not deleted from the cache")
+	}
+}
+
+func TestDifferentTypes(t *testing.T) {
+	t.Parallel()
+
+	timeCheckNewTicker := 1 * time.Second
+	timeRecordEvict := 10 * time.Second
+
+	cacheInstance := cache.New(timeCheckNewTicker, timeRecordEvict)
+
+	searchValue := "12345678"
+
+	err := cacheInstance.Add(0.75513, searchValue)
+
+	if err != nil {
+		t.Errorf("failed add key %v", err)
+	}
+
+	value, foundKey := cacheInstance.Get(0.75513)
+
+	if !foundKey || value != searchValue {
+		t.Errorf("expected value to be %s but got %s", searchValue, value)
 	}
 }
