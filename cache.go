@@ -19,7 +19,7 @@ func (e *KeyAlreadyExistsError) Error() string {
 type Cache struct {
 	durationTimeEvict   time.Duration
 	durationCheckTicker time.Duration
-	data                map[any]*cacheValue
+	store               map[any]*cacheValue
 	mu                  *sync.RWMutex
 }
 
@@ -31,7 +31,7 @@ type cacheValue struct {
 func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache {
 	return &Cache{
 		mu:                  &sync.RWMutex{},
-		data:                make(map[any]*cacheValue),
+		store:                make(map[any]*cacheValue),
 		durationCheckTicker: timeCheckNewTicker,
 		durationTimeEvict:   timeRecordEvict,
 	}
@@ -58,11 +58,11 @@ func (c *Cache) Add(key any, value any) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	if _, ok := c.data[key]; ok {
+	if _, ok := c.store[key]; ok {
 		return &KeyAlreadyExistsError{Key: key}
 	}
 
-	c.data[key] = &cacheValue{value: value, lastUsed: time.Now()}
+	c.store[key] = &cacheValue{value: value, lastUsed: time.Now()}
 
 	return nil
 }
@@ -71,7 +71,7 @@ func (c *Cache) Get(key any) (any, bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	val, foundKey := c.data[key]
+	val, foundKey := c.store[key]
 
 	if foundKey {
 		val.lastUsed = time.Now()
@@ -86,16 +86,16 @@ func (c *Cache) Delete(key any) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	delete(c.data, key)
+	delete(c.store, key)
 }
 
 func (c *Cache) Evict() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 
-	for key, val := range c.data {
+	for key, val := range c.store {
 		if time.Since(val.lastUsed) >= c.durationTimeEvict {
-			delete(c.data, key)
+			go c.Delete(key)
 		}
 	}
 }

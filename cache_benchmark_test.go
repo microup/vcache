@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	cache "microup.ru/vcache/src"
+	cache "microup.ru/vcache"
 )
 
 func BenchmarkCacheAdd(b *testing.B) {
