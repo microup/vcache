@@ -90,8 +90,8 @@ func (c *Cache) Delete(key any) {
 }
 
 func (c *Cache) Evict() {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
 	for key, val := range c.store {
 		if time.Since(val.lastUsed) >= c.durationTimeEvict {
