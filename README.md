@@ -98,12 +98,10 @@ key1 not found
 
 In this example, the cache is created with a check ticker of 1 second and a record eviction of 5 seconds. The cache eviction routine is started using the StartEvict method and passing in the context created earlier. Key-value pairs are added to the cache using the Add method, and values are retrieved using the Get method. After waiting for 6 seconds, the Get method is used again to retrieve the value for the key "key1", but it is no longer found because it has been evicted from the cache.
 
-## Results benchmark
+## Results benchmark on cpu: AMD Ryzen 5 5600X 6-Core Processor
 
 ```
 go test -bench=. -benchmem -benchtime=5s
-
-cpu: AMD Ryzen 5 5600X 6-Core Processor
 VCacheAdd-12             8966773               761.1 ns/op           213 B/op          7 allocs/op
 VCacheGet-12            39050804               184.0 ns/op             7 B/op          0 allocs/op
 VCacheDelete-12         36885169               192.3 ns/op             7 B/op          0 allocs/op
@@ -113,8 +111,6 @@ VCacheMixed-12           1000000              7607 ns/op             110 B/op   
 The results of comparison with another library [go-cache](https://github.com/patrickmn/go-cache) are also presented:
 ```
 go test -bench=. -benchmem -benchtime=5s
-
-cpu: AMD Ryzen 5 5600X 6-Core Processor
 GoCacheAdd-12            11722840               459.1 ns/op           203 B/op          5 allocs/op
 GoCacheGet-12            40415334               185.9 ns/op             7 B/op          0 allocs/op
 GoCacheDelete-12         35583009               218.9 ns/op            23 B/op          1 allocs/op
