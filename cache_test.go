@@ -60,7 +60,7 @@ func TestCacheEvict(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	value, foundKey = cacheInstance.Get("test_key")
-	if foundKey || value != "" {
+	if foundKey || value != nil {
 		t.Errorf("expected value to be evicted but got %v, %v", value, foundKey)
 	}
 }
@@ -88,7 +88,7 @@ func TestAddGetData(t *testing.T) {
 	}
 
 	value, foundKey = cacheInstance.Get("EMPTY")
-	if foundKey || value != "" {
+	if foundKey || value != nil {
 		t.Errorf("Expected lastUsed to be set but got nil")
 	}
 }

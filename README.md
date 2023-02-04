@@ -102,8 +102,9 @@ In this example, the cache is created with a check ticker of 1 second and a reco
 go test -bench=. -benchmem -benchtime=5s
 
 cpu: AMD Ryzen 5 5600X 6-Core Processor
-BenchmarkCacheAdd-12             9367170               759.6 ns/op           232 B/op          7 allocs/op
-BenchmarkCacheGet-12            39035611               194.4 ns/op             7 B/op          0 allocs/op
-BenchmarkCacheEvict-12          22821903               258.2 ns/op             0 B/op          0 allocs/op
-BenchmarkCacheDelete-12         37573690               194.3 ns/op             7 B/op          0 allocs/op
+BenchmarkCacheAdd-12             7400952               860.1 ns/op           260 B/op          7 allocs/op
+BenchmarkCacheGet-12            37476716               189.7 ns/op             7 B/op          0 allocs/op
+BenchmarkCacheDelete-12         38150173               214.7 ns/op             7 B/op          0 allocs/op
+BenchmarkCacheEvict-12          25363264               276.7 ns/op             0 B/op          0 allocs/op
+BenchmarkCacheMixed-12          18852901               350.4 ns/op           128 B/op          7 allocs/op
 ```
