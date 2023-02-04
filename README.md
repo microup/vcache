@@ -117,7 +117,7 @@ GoCacheDelete-12         35583009               218.9 ns/op            23 B/op  
 ```
 The results of comparison with another library [go-generics-cache](https://github.com/Code-Hex/go-generics-cache) are also presented:
 ```
-GoCGenericsCacheAdd-12             7212994               745.5 ns/op           304 B/op          7 allocs/op
-GoCGenericsCacheGet-12            31680290               201.4 ns/op            23 B/op          1 allocs/op
-GoCGenericsCacheDelete-12         36424033               231.1 ns/op            23 B/op          1 allocs/op
+GoCGenericsCacheAdd-12      7212994             745.5 ns/op           304 B/op          7 allocs/op
+GoCGenericsCacheGet-12      31680290            201.4 ns/op            23 B/op          1 allocs/op
+GoCGenericsCacheDelete-12   36424033            231.1 ns/op            23 B/op          1 allocs/op
 ```
