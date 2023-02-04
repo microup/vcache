@@ -8,7 +8,7 @@ This is a Go package named "vcache" which implements a simple in-memory cache. T
 
 This project differs from the more well-known [go-cache](https://github.com/patrickmn/go-cache) in that it uses an intraface{} type key instead of a string key in its map structure, making cache management more flexible.
 
-Below this document you will find the performance test results and comparison with other libraries.
+Below this document you will find the performance test results and comparison with other libraries (include with generics).
 
 ## Where can this be used?
 
@@ -114,4 +114,10 @@ go test -bench=. -benchmem -benchtime=5s
 GoCacheAdd-12            11722840               459.1 ns/op           203 B/op          5 allocs/op
 GoCacheGet-12            40415334               185.9 ns/op             7 B/op          0 allocs/op
 GoCacheDelete-12         35583009               218.9 ns/op            23 B/op          1 allocs/op
+```
+The results of comparison with another library [go-generics-cache](https://github.com/Code-Hex/go-generics-cache) are also presented:
+```
+GoCGenericsCacheAdd-12             7212994               745.5 ns/op           304 B/op          7 allocs/op
+GoCGenericsCacheGet-12            31680290               201.4 ns/op            23 B/op          1 allocs/op
+GoCGenericsCacheDelete-12         36424033               231.1 ns/op            23 B/op          1 allocs/op
 ```
