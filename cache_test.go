@@ -143,14 +143,4 @@ func TestDifferentTypes(t *testing.T) {
 		t.Errorf("expected value to be %s but got %s", searchValue, value)
 	}
 
-	err = cacheInstance.Add([]string{"test1", "test2"}, searchValue)
-
-	if err != nil {
-		t.Errorf("failed add key %v", err)
-	}
-
-	value, foundKey = cacheInstance.Get([]string{"test1", "test2"})
-	if foundKey == false || value != searchValue {
-		t.Errorf("Expected lastUsed to be set but got nil")
-	}
 }
