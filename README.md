@@ -8,6 +8,8 @@ This is a Go package named "vcache" which implements a simple in-memory cache. T
 
 This project differs from the more well-known [go-cache](https://github.com/patrickmn/go-cache) in that it uses an intraface{} type key instead of a string key in its map structure, making cache management more flexible.
 
+Below this document you will find the performance test results and comparison with other libraries.
+
 ## Where can this be used?
 
 This library can be applied in software systems where caching is needed, such as web applications, databases, or other systems that require fast access to frequently used data. The library provides an in-memory cache that can be used to store frequently used data, such as API responses, database results, or other frequently accessed data. By using this library, the system can avoid unnecessary data processing and improve performance by quickly retrieving the data from the cache. The cache can also be automatically cleaned up based on the time specified in the durationTimeEvict variable, freeing up memory and ensuring that the cache remains relevant.
@@ -102,9 +104,18 @@ In this example, the cache is created with a check ticker of 1 second and a reco
 go test -bench=. -benchmem -benchtime=5s
 
 cpu: AMD Ryzen 5 5600X 6-Core Processor
-BenchmarkCacheAdd-12             7400952               860.1 ns/op           260 B/op          7 allocs/op
-BenchmarkCacheGet-12            37476716               189.7 ns/op             7 B/op          0 allocs/op
-BenchmarkCacheDelete-12         38150173               214.7 ns/op             7 B/op          0 allocs/op
-BenchmarkCacheEvict-12          25363264               276.7 ns/op             0 B/op          0 allocs/op
-BenchmarkCacheMixed-12          18852901               350.4 ns/op           128 B/op          7 allocs/op
+VCacheAdd-12             8966773               761.1 ns/op           213 B/op          7 allocs/op
+VCacheGet-12            39050804               184.0 ns/op             7 B/op          0 allocs/op
+VCacheDelete-12         36885169               192.3 ns/op             7 B/op          0 allocs/op
+VCacheEvict-12          23756037               248.5 ns/op             0 B/op          0 allocs/op
+VCacheMixed-12           1000000              7607 ns/op             110 B/op          7 allocs/op
+```
+The results of comparison with another library [go-cache](https://github.com/patrickmn/go-cache) are also presented:
+```
+go test -bench=. -benchmem -benchtime=5s
+
+cpu: AMD Ryzen 5 5600X 6-Core Processor
+GoCacheAdd-12            11722840               459.1 ns/op           203 B/op          5 allocs/op
+GoCacheGet-12            40415334               185.9 ns/op             7 B/op          0 allocs/op
+GoCacheDelete-12         35583009               218.9 ns/op            23 B/op          1 allocs/op
 ```
