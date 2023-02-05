@@ -16,11 +16,11 @@ This library can be applied in software systems where caching is needed, such as
 
 For example, where you can use this solution, to save indexes of unique keys from a database, for instance:
 
-```err := c.Add(1027, "value1")```
+```err := c.Add(1027, any_object)```
 
 or for example, if you need to save intermediate results for precise calculations, you can use a key type of:
 
-```err := c.Add(0.5274, "value2")"```
+```err := c.Add(0.5274, any_object)"```
 
 
 ## It has the following main functions:
