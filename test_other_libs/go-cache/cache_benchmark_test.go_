@@ -1,0 +1,71 @@
+package cache
+
+import (
+	"strconv"
+	"testing"
+)
+
+func BenchmarkCacheAdd(b *testing.B) {
+	c := New(DefaultExpiration, 0)
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		value := "value" + strconv.Itoa(i)
+		_ = c.Add(key, value, 0)
+	}
+}
+
+
+func BenchmarkCacheGet(b *testing.B) {
+	cacheTest := New(DefaultExpiration, 0)
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		value := "value" + strconv.Itoa(i)
+		_ = cacheTest.Add(key, value, 0)
+	}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		cacheTest.Get(key)
+	}
+}
+
+func BenchmarkCacheDelete(b *testing.B) {
+	cacheTest := New(DefaultExpiration, 0)
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		value := "value" + strconv.Itoa(i)
+		_ = cacheTest.Add(key, value, 0)
+	}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		cacheTest.Delete(key)
+	}
+}
+
+
+func BenchmarkCacheEvict(b *testing.B) {
+	cacheTest := New(60, 2)
+
+	for i := 0; i < b.N; i++ {
+		key := "key" + strconv.Itoa(i)
+		value := "value" + strconv.Itoa(i)
+		_ = cacheTest.Add(key, value)
+	}
+
+	// this needs to be done so that the condition for deletion applies to all records.
+	time.Sleep(2 * time.Second)
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		cacheTest.Evict()
+	}
+}
