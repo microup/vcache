@@ -130,3 +130,5 @@ GoCGenericsCacheAdd-12      7212994             745.5 ns/op           304 B/op  
 GoCGenericsCacheGet-12      31680290            201.4 ns/op            23 B/op          1 allocs/op
 GoCGenericsCacheDelete-12   36424033            231.1 ns/op            23 B/op          1 allocs/op
 ```
+You can find the files for conducting the specified tests at the indicated path: [files]([https://github.com/patrickmn/go-cache](https://github.com/microup/vcache/tree/main/test_other_libs)) 
+
