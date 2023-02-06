@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//KeyExistsError: a custom error type that is returned when an attempt is
+// made to add a key to the cache that already exists.
 type KeyExistsError struct {
 	Key any
 }
@@ -15,6 +17,7 @@ func (e *KeyExistsError) Error() string {
 	return fmt.Sprintf("key %v already exists", e.Key)
 }
 
+//Cache: a struct that implements a simple in-memory key-value cache with eviction.
 type Cache struct {
 	durationRecordEvict    int64
 	durationCheckNewTicker time.Duration
@@ -22,11 +25,13 @@ type Cache struct {
 	mu                     *sync.RWMutex
 }
 
+//cacheValue: a struct that contains a value and its expiration time.
 type cacheValue struct {
 	value          any
 	expirationTime int64
 }
 
+//New: a function that creates and returns a new Cache instance.
 func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache {
 	return &Cache{
 		mu:                     &sync.RWMutex{},
@@ -36,6 +41,8 @@ func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache
 	}
 }
 
+//StartEvict: a method that starts the eviction process in a separate goroutine.
+// It stops when the context passed as an argument is done.
 func (c *Cache) StartEvict(ctx context.Context) {
 	ticker := time.NewTicker(c.durationCheckNewTicker)
 
@@ -53,6 +60,7 @@ func (c *Cache) StartEvict(ctx context.Context) {
 	}()
 }
 
+//Add: a method that adds a new key-value pair to the cache. Returns KeyExistsError if the key already exists.
 func (c *Cache) Add(key any, value any) error {
 	c.mu.Lock()
 
@@ -72,6 +80,8 @@ func (c *Cache) Add(key any, value any) error {
 	return nil
 }
 
+//Get: a method that retrieves a value from the cache by its key.
+// Returns the value and a boolean indicating if the key was found.
 func (c *Cache) Get(key any) (any, bool) {
 	c.mu.RLock()
 
@@ -96,6 +106,7 @@ func (c *Cache) Get(key any) (any, bool) {
 	return nil, false
 }
 
+//Delete: a method that deletes a key-value pair from the cache.
 func (c *Cache) Delete(key any) {
 	c.mu.Lock()
 
@@ -103,6 +114,7 @@ func (c *Cache) Delete(key any) {
 	c.mu.Unlock()
 }
 
+//Evict: a method that evicts expired key-value pairs from the cache.
 func (c *Cache) Evict() {
 	c.mu.Lock()
 
