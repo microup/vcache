@@ -118,10 +118,16 @@ func (c *Cache) Delete(key any) {
 func (c *Cache) Evict() {
 	c.mu.Lock()
 
+	var evictedItems []interface{}
+
 	for key, val := range c.store {
 		if time.Now().Unix() > val.expirationTime {
-			delete(c.store, key)
+			evictedItems = append(evictedItems, key)
 		}
+	}
+
+	for _, key := range evictedItems {
+		delete(c.store, key)
 	}
 
 	c.mu.Unlock()
