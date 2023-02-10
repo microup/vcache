@@ -5,22 +5,22 @@ PROJECT_NAME = "vcache"
 all: init lint test race 
 
 init:
-  go mod tidy
-  go mod vendor
+	go mod tidy
+	go mod vendor
 
 pre-push: lint test race 
 
 lint: 
-  golangci-lint run -v ./...
+	golangci-lint run -v ./...
 
 test: 
-  go test -v ./...
+	go test -v ./...
 
 race: dep ## Run data race detector
-  go test -race -v ./...
+	go test -race -v ./...
 
 dep: ## Get the dependencies
-  go get -v -d ./...
+	go get -v -d ./...
 
 bench:
-  go test -bench=. ./... -benchmem -benchtime=5s
+	go test -bench=. ./... -benchmem -benchtime=5s
