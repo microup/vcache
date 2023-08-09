@@ -24,7 +24,7 @@ func TestStartEvict(t *testing.T) {
 		t.Errorf("failed add key %v", err)
 	}
 
-	cacheInstance.StartEvict(ctx)
+	_ = cacheInstance.StartEvict(ctx)
 
 	time.Sleep(3 * time.Second)
 
@@ -42,7 +42,7 @@ func TestCacheEvict(t *testing.T) {
 	timeRecordEvict := 1 * time.Second
 
 	cacheInstance := cache.New(timeCheckNewTicker, timeRecordEvict)
-	cacheInstance.StartEvict(ctx)
+	_ = cacheInstance.StartEvict(ctx)
 
 	searchValue := "12345678"
 
