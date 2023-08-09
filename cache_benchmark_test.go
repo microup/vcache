@@ -74,7 +74,7 @@ func BenchmarkCacheEvict(b *testing.B) {
 
 func BenchmarkCacheMixed(b *testing.B) {
 	cacheTest := cache.New(2*time.Second, 1*time.Nanosecond)
-	cacheTest.StartEvict(context.Background())
+	_ = cacheTest.StartEvict(context.Background())
 
 	for i := 0; i < b.N; i++ {
 		key := "key" + strconv.Itoa(i)

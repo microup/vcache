@@ -2,10 +2,13 @@ package cache
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
 )
+
+var ErrContextIsNil = errors.New("context is nil")
 
 //KeyExistsError: a custom error type that is returned when an attempt is
 // made to add a key to the cache that already exists.
@@ -17,8 +20,8 @@ func (e *KeyExistsError) Error() string {
 	return fmt.Sprintf("key %v already exists", e.Key)
 }
 
-//Cache: a struct that implements a simple in-memory key-value cache with eviction.
-type Cache struct {
+//VCache: a struct that implements a simple in-memory key-value cache with eviction.
+type VCache struct {
 	durationRecordEvict    int64
 	durationCheckNewTicker time.Duration
 	store                  map[any]*cacheValue
@@ -32,8 +35,8 @@ type cacheValue struct {
 }
 
 //New: a function that creates and returns a new Cache instance.
-func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache {
-	return &Cache{
+func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *VCache {
+	return &VCache{
 		mu:                     &sync.RWMutex{},
 		store:                  make(map[any]*cacheValue),
 		durationCheckNewTicker: timeCheckNewTicker,
@@ -43,7 +46,11 @@ func New(timeCheckNewTicker time.Duration, timeRecordEvict time.Duration) *Cache
 
 //StartEvict: a method that starts the eviction process in a separate goroutine.
 // It stops when the context passed as an argument is done.
-func (c *Cache) StartEvict(ctx context.Context) {
+func (c *VCache) StartEvict(ctx context.Context) error {
+	if ctx == nil {
+		return ErrContextIsNil
+	}
+
 	ticker := time.NewTicker(c.durationCheckNewTicker)
 
 	go func() {
@@ -58,10 +65,12 @@ func (c *Cache) StartEvict(ctx context.Context) {
 			}
 		}
 	}()
+
+	return nil
 }
 
 //Add: a method that adds a new key-value pair to the cache. Returns KeyExistsError if the key already exists.
-func (c *Cache) Add(key any, value any) error {
+func (c *VCache) Add(key any, value any) error {
 	c.mu.Lock()
 
 	if _, ok := c.store[key]; ok {
@@ -82,7 +91,7 @@ func (c *Cache) Add(key any, value any) error {
 
 //Get: a method that retrieves a value from the cache by its key.
 // Returns the value and a boolean indicating if the key was found.
-func (c *Cache) Get(key any) (any, bool) {
+func (c *VCache) Get(key any) (any, bool) {
 	c.mu.RLock()
 
 	val, foundKey := c.store[key]
@@ -107,7 +116,7 @@ func (c *Cache) Get(key any) (any, bool) {
 }
 
 //Delete: a method that deletes a key-value pair from the cache.
-func (c *Cache) Delete(key any) {
+func (c *VCache) Delete(key any) {
 	c.mu.Lock()
 
 	delete(c.store, key)
@@ -115,7 +124,7 @@ func (c *Cache) Delete(key any) {
 }
 
 //Evict: a method that evicts expired key-value pairs from the cache.
-func (c *Cache) Evict() {
+func (c *VCache) Evict() {
 	c.mu.Lock()
 
 	var evictedItems []interface{}
